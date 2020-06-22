@@ -1,7 +1,7 @@
 name: flutter_sidebar
 description: An easy to configure sidebar widget for your flutter mobile/web apps.
-version: 0.0.2
-repository: https://github.com/tusharsadhwani/flutter_sidebar
+version: 0.0.2+1
+homepage: https://github.com/tusharsadhwani/flutter_sidebar
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
