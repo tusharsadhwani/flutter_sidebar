@@ -3,7 +3,7 @@ library flutter_sidebar;
 import 'package:flutter/material.dart';
 
 class Sidebar extends StatefulWidget {
-  final List<String> tabs;
+  final List<Map<String, dynamic>> tabs;
 
   const Sidebar({Key key, @required this.tabs}) : super(key: key);
 
@@ -30,20 +30,38 @@ class _SidebarState extends State<Sidebar> {
           ),
           Expanded(
             child: ListView.builder(
-              itemBuilder: (context, index) => ListTile(
-                onTap: () {
-                  setState(() {
-                    activeTab = index;
-                  });
-                },
-                title: Text(widget.tabs[index]),
-                selected: index == activeTab,
-              ),
+              itemBuilder: (BuildContext context, int index) =>
+                  SidebarItem(widget.tabs[index]),
               itemCount: widget.tabs.length,
             ),
           )
         ],
       ),
     );
+  }
+}
+
+class SidebarItem extends StatelessWidget {
+  const SidebarItem(this.data);
+
+  final Map<String, dynamic> data;
+
+  Widget _buildTiles(Map<String, dynamic> root) {
+    if (root['children'] == null) return ListTile(title: Text(root['title']));
+
+    List<Widget> children = [];
+    for (Map<String, dynamic> item in root['children']) {
+      children.add(_buildTiles(item));
+    }
+
+    return ExpansionTile(
+      title: Text(root['title']),
+      children: children,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildTiles(data);
   }
 }

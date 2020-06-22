@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:device_preview/device_preview.dart';
+// import 'package:device_preview/device_preview.dart';
 
 import 'package:flutter_sidebar/flutter_sidebar.dart';
 
 void main() {
-  runApp(DevicePreview(builder: (context) => MyApp()));
+  // runApp(DevicePreview(builder: (context) => MyApp()));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -13,8 +14,8 @@ class MyApp extends StatelessWidget {
     const title = 'Flutter Sidebar Test';
 
     return MaterialApp(
-      builder: DevicePreview.appBuilder,
-      locale: DevicePreview.of(context).locale,
+      // builder: DevicePreview.appBuilder,
+      // locale: DevicePreview.of(context).locale,
       title: title,
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -35,6 +36,30 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final List<Map<String, dynamic>> data = [
+    {
+      'title': 'Chapter A',
+      'children': [
+        {'title': 'Chapter A1'},
+        {'title': 'Chapter A2'},
+      ],
+    },
+    {
+      'title': 'Chapter B',
+      'children': [
+        {'title': 'Chapter B1'},
+        {
+          'title': 'Chapter B2',
+          'children': [
+            {'title': 'Chapter B2a'},
+            {'title': 'Chapter B2b'},
+          ]
+        },
+      ],
+    },
+    {'title': 'Chapter C'},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Row(
         children: [
           Sidebar(
-            tabs: ['Home', 'Browse', 'Help', 'Settings'],
+            tabs: data,
           ),
         ],
       ),
