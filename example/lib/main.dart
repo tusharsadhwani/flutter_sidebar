@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
           'children': [
             {'title': 'Chapter B2a'},
             {'title': 'Chapter B2b'},
-          ]
+          ],
         },
       ],
     },

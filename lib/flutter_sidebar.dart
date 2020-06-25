@@ -50,7 +50,7 @@ class _SidebarState extends State<Sidebar> {
               ),
               itemCount: widget.tabs.length,
             ),
-          )
+          ),
         ],
       ),
     );
