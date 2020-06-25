@@ -36,7 +36,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Map<String, dynamic>> data = [
+  final List<Map<String, dynamic>> tabData = [
     {
       'title': 'Chapter A',
       'children': [
@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Row(
         children: [
           Sidebar(
-            tabs: data,
+            tabData,
           ),
         ],
       ),

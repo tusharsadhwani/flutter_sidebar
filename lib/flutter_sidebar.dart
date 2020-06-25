@@ -1,20 +1,30 @@
 library flutter_sidebar;
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'custom_expansion_tile.dart';
 
 class Sidebar extends StatefulWidget {
   final List<Map<String, dynamic>> tabs;
+  final List<int> activeTabIndices;
+  final Function(List<int> tabIndices) selectTab;
 
-  const Sidebar({Key key, @required this.tabs}) : super(key: key);
+  const Sidebar(this.tabs, [this.activeTabIndices, this.selectTab]);
 
   @override
   _SidebarState createState() => _SidebarState();
 }
 
 class _SidebarState extends State<Sidebar> {
-  List<int> activeTabIndices = [];
+  List<int> activeTabIndices;
+
+  void setActiveTabIndices(List<int> newIndices) {
+    setState(() {
+      activeTabIndices = newIndices;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +42,12 @@ class _SidebarState extends State<Sidebar> {
           ),
           Expanded(
             child: ListView.builder(
-              itemBuilder: (BuildContext context, int index) =>
-                  SidebarItem(widget.tabs[index]),
+              itemBuilder: (BuildContext context, int index) => SidebarItem(
+                widget.tabs[index],
+                activeTabIndices,
+                setActiveTabIndices,
+                index: index,
+              ),
               itemCount: widget.tabs.length,
             ),
           )
@@ -44,23 +58,52 @@ class _SidebarState extends State<Sidebar> {
 }
 
 class SidebarItem extends StatelessWidget {
-  const SidebarItem(this.data);
-
   final Map<String, dynamic> data;
+  final List<int> activeTabIndices;
+  final void Function(List<int> newIndices) setActiveTabIndices;
+  final int index;
+  final List<int> indices;
+
+  const SidebarItem(
+    this.data,
+    this.activeTabIndices,
+    this.setActiveTabIndices, {
+    this.index,
+    this.indices,
+  }) : assert(
+          (index == null && indices != null) ||
+              (index != null && indices == null),
+          'Exactly one parameter out of [index, indices] has to be provided',
+        );
+
+  bool _indicesMatch(List<int> a, List<int> b) {
+    for (int i = 0; i < min(a.length, b.length); i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
+  }
 
   Widget _buildTiles(Map<String, dynamic> root) {
+    final _indices = indices ?? [index];
     if (root['children'] == null)
       return ListTile(
+        selected: activeTabIndices != null &&
+            _indicesMatch(_indices, activeTabIndices),
         title: Text(root['title']),
-        onTap: () {},
+        onTap: () => setActiveTabIndices(_indices),
       );
 
     List<Widget> children = [];
-    for (Map<String, dynamic> item in root['children']) {
-      children.add(_buildTiles(item));
+    for (int i = 0; i < root['children'].length; i++) {
+      Map<String, dynamic> item = root['children'][i];
+      final itemIndices = [..._indices, i];
+      children.add(SidebarItem(item, activeTabIndices, setActiveTabIndices,
+          indices: itemIndices));
     }
 
     return CustomExpansionTile(
+      selected:
+          activeTabIndices != null && _indicesMatch(_indices, activeTabIndices),
       title: Text(root['title']),
       children: children,
     );
