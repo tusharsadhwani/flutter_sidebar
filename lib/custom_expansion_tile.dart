@@ -9,6 +9,7 @@ class CustomExpansionTile extends StatefulWidget {
     this.onExpansionChanged,
     this.children = const <Widget>[],
     this.trailing,
+    this.selected,
     this.initiallyExpanded = false,
     this.maintainState = false,
     this.tilePadding,
@@ -30,6 +31,7 @@ class CustomExpansionTile extends StatefulWidget {
   final ValueChanged<bool> onExpansionChanged;
   final List<Widget> children;
   final Widget trailing;
+  final bool selected;
   final bool initiallyExpanded;
   final bool maintainState;
   final EdgeInsetsGeometry tilePadding;
@@ -102,6 +104,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile>
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
+            selected: widget.selected ?? false,
             onTap: _handleTap,
             contentPadding: widget.tilePadding,
             leading: widget.leading,
