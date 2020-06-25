@@ -2,6 +2,8 @@ library flutter_sidebar;
 
 import 'package:flutter/material.dart';
 
+import 'custom_expansion_tile.dart';
+
 class Sidebar extends StatefulWidget {
   final List<Map<String, dynamic>> tabs;
 
@@ -12,7 +14,7 @@ class Sidebar extends StatefulWidget {
 }
 
 class _SidebarState extends State<Sidebar> {
-  int activeTab = 0;
+  List<int> activeTabIndices = [];
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +49,18 @@ class SidebarItem extends StatelessWidget {
   final Map<String, dynamic> data;
 
   Widget _buildTiles(Map<String, dynamic> root) {
-    if (root['children'] == null) return ListTile(title: Text(root['title']));
+    if (root['children'] == null)
+      return ListTile(
+        title: Text(root['title']),
+        onTap: () {},
+      );
 
     List<Widget> children = [];
     for (Map<String, dynamic> item in root['children']) {
       children.add(_buildTiles(item));
     }
 
-    return ExpansionTile(
+    return CustomExpansionTile(
       title: Text(root['title']),
       children: children,
     );
