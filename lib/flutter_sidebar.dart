@@ -9,9 +9,9 @@ import 'custom_expansion_tile.dart';
 class Sidebar extends StatefulWidget {
   final List<Map<String, dynamic>> tabs;
   final List<int> activeTabIndices;
-  final Function(List<int> tabIndices) selectTab;
+  final void Function(String) setTab;
 
-  const Sidebar(this.tabs, [this.activeTabIndices, this.selectTab]);
+  const Sidebar(this.tabs, {this.activeTabIndices, this.setTab});
 
   @override
   _SidebarState createState() => _SidebarState();
@@ -44,6 +44,7 @@ class _SidebarState extends State<Sidebar> {
             child: ListView.builder(
               itemBuilder: (BuildContext context, int index) => SidebarItem(
                 widget.tabs[index],
+                widget.setTab,
                 activeTabIndices,
                 setActiveTabIndices,
                 index: index,
@@ -59,6 +60,7 @@ class _SidebarState extends State<Sidebar> {
 
 class SidebarItem extends StatelessWidget {
   final Map<String, dynamic> data;
+  final void Function(String) setTab;
   final List<int> activeTabIndices;
   final void Function(List<int> newIndices) setActiveTabIndices;
   final int index;
@@ -66,6 +68,7 @@ class SidebarItem extends StatelessWidget {
 
   const SidebarItem(
     this.data,
+    this.setTab,
     this.activeTabIndices,
     this.setActiveTabIndices, {
     this.index,
@@ -90,14 +93,18 @@ class SidebarItem extends StatelessWidget {
         selected: activeTabIndices != null &&
             _indicesMatch(_indices, activeTabIndices),
         title: Text(root['title']),
-        onTap: () => setActiveTabIndices(_indices),
+        onTap: () {
+          setActiveTabIndices(_indices);
+          setTab(root['title']);
+        },
       );
 
     List<Widget> children = [];
     for (int i = 0; i < root['children'].length; i++) {
       Map<String, dynamic> item = root['children'][i];
       final itemIndices = [..._indices, i];
-      children.add(SidebarItem(item, activeTabIndices, setActiveTabIndices,
+      children.add(SidebarItem(
+          item, setTab, activeTabIndices, setActiveTabIndices,
           indices: itemIndices));
     }
 

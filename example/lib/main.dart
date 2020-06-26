@@ -59,17 +59,35 @@ class _MyHomePageState extends State<MyHomePage> {
     },
     {'title': 'Chapter C'},
   ];
+  String tab;
+  void setTab(String newTab) {
+    setState(() {
+      tab = newTab;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    const _textStyle = TextStyle(fontSize: 26);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: Row(
         children: [
-          Sidebar(
-            tabData,
+          Sidebar(tabData, setTab: setTab),
+          Expanded(
+            child: Center(
+              child: tab != null
+                  ? Text(
+                      'Selected tab: $tab',
+                      style: _textStyle,
+                    )
+                  : Text(
+                      'No tab selected',
+                      style: _textStyle,
+                    ),
+            ),
           ),
         ],
       ),
