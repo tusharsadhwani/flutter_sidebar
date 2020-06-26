@@ -8,17 +8,28 @@ import 'custom_expansion_tile.dart';
 
 class Sidebar extends StatefulWidget {
   final List<Map<String, dynamic>> tabs;
-  final List<int> activeTabIndices;
   final void Function(String) setTab;
+  final bool isOpen;
+  final List<int> activeTabIndices;
 
-  const Sidebar(this.tabs, {this.activeTabIndices, this.setTab});
+  const Sidebar(
+    this.tabs, {
+    Key key,
+    this.activeTabIndices,
+    this.setTab,
+    this.isOpen,
+  }) : super(key: key);
 
   @override
   _SidebarState createState() => _SidebarState();
 }
 
-class _SidebarState extends State<Sidebar> {
+class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
+  static const double _maxSidebarWidth = 300;
+  double _sidebarWidth = _maxSidebarWidth;
   List<int> activeTabIndices;
+  AnimationController _animationController;
+  Animation _animation;
 
   void setActiveTabIndices(List<int> newIndices) {
     setState(() {
@@ -27,32 +38,65 @@ class _SidebarState extends State<Sidebar> {
   }
 
   @override
+  void initState() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+      value: widget.isOpen ? 1 : 0,
+    );
+    _animation = CurvedAnimation(
+        parent: _animationController, curve: Curves.easeInOutQuad);
+    if (!widget.isOpen)
+      _animationController.forward();
+    else
+      _animationController.reverse();
+
+    Future.delayed(Duration.zero, () {
+      final mediaQuery = MediaQuery.of(context);
+      _sidebarWidth = min(mediaQuery.size.width * 0.7, _maxSidebarWidth);
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    return Container(
-      width: 300,
-      constraints: BoxConstraints(
-        maxWidth: mediaQuery.size.width * 0.7,
-      ),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 100,
-            child: Container(color: Colors.blue),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (BuildContext context, int index) => SidebarItem(
-                widget.tabs[index],
-                widget.setTab,
-                activeTabIndices,
-                setActiveTabIndices,
-                index: index,
-              ),
-              itemCount: widget.tabs.length,
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (_, __) => ClipRect(
+        child: SizedOverflowBox(
+          size: Size(_sidebarWidth * _animation.value, double.infinity),
+          child: Container(
+            color: Colors.white,
+            width: _sidebarWidth,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 100,
+                  child: Container(color: Colors.blue),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemBuilder: (BuildContext context, int index) =>
+                        SidebarItem(
+                      widget.tabs[index],
+                      widget.setTab,
+                      activeTabIndices,
+                      setActiveTabIndices,
+                      index: index,
+                    ),
+                    itemCount: widget.tabs.length,
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
