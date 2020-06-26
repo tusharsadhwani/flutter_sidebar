@@ -13,3 +13,7 @@
 ## [0.1.0] - June 26, 2020
 
 - Add setTab callback
+
+## [0.2.0] - June 26, 2020
+
+- Add animations and mobile support
