@@ -18,6 +18,6 @@
 
 - Add animations and mobile support
 
-## [0.2.1] - June 27, 2020
+## [0.2.1+1] - June 27, 2020
 
 - UI Improvements
