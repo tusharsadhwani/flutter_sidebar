@@ -81,16 +81,18 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
                   child: Container(color: Colors.blue),
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    itemBuilder: (BuildContext context, int index) =>
-                        SidebarItem(
-                      widget.tabs[index],
-                      widget.setTab,
-                      activeTabIndices,
-                      setActiveTabIndices,
-                      index: index,
+                  child: Material(
+                    child: ListView.builder(
+                      itemBuilder: (BuildContext context, int index) =>
+                          SidebarItem(
+                        widget.tabs[index],
+                        widget.setTab,
+                        activeTabIndices,
+                        setActiveTabIndices,
+                        index: index,
+                      ),
+                      itemCount: widget.tabs.length,
                     ),
-                    itemCount: widget.tabs.length,
                   ),
                 ),
               ],
