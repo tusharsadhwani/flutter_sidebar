@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-// import 'package:device_preview/device_preview.dart';
 
 import 'package:flutter_sidebar/flutter_sidebar.dart';
 
 void main() {
-  // runApp(DevicePreview(builder: (context) => MyApp()));
   runApp(MyApp());
 }
 
@@ -14,8 +12,6 @@ class MyApp extends StatelessWidget {
     const title = 'Flutter Sidebar Test';
 
     return MaterialApp(
-      // builder: DevicePreview.appBuilder,
-      // locale: DevicePreview.of(context).locale,
       title: title,
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -116,10 +112,12 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: isMobile
           ? Stack(children: [mainContent, sidebar])
-          : Row(children: [
-              sidebar,
-              Expanded(child: mainContent),
-            ]),
+          : Row(
+              children: [
+                sidebar,
+                Expanded(child: mainContent),
+              ],
+            ),
     );
   }
 }
