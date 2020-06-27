@@ -21,3 +21,7 @@
 ## [0.2.1+1] - June 27, 2020
 
 - UI Improvements
+
+## [0.2.2] - June 27, 2020
+
+- Bugfixes
