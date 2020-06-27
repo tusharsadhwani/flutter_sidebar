@@ -17,16 +17,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.orange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: title),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -79,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage>
       final mediaQuery = MediaQuery.of(context);
       setState(() {
         isMobile = mediaQuery.size.width < _mobileThreshold;
-        sidebarOpen = isMobile;
+        sidebarOpen = !isMobile;
       });
     });
   }
@@ -94,9 +90,9 @@ class _MyHomePageState extends State<MyHomePage>
     setState(() {
       sidebarOpen = !sidebarOpen;
       if (sidebarOpen)
-        _animationController.reverse();
-      else
         _animationController.forward();
+      else
+        _animationController.reverse();
     });
   }
 
@@ -105,7 +101,7 @@ class _MyHomePageState extends State<MyHomePage>
     const _textStyle = TextStyle(fontSize: 26);
     final sidebar = Sidebar(
       tabData,
-      key: ValueKey(sidebarOpen),
+      key: ValueKey(sidebarOpen), //TODO: prevent rebuilds on sidebarOpen change
       isOpen: sidebarOpen,
       setTab: setTab,
     );
@@ -134,22 +130,23 @@ class _MyHomePageState extends State<MyHomePage>
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(icon: Icon(Icons.menu), onPressed: _toggleSidebar),
-        title: Text(widget.title),
+        title: Text('Flutter Sidebar'),
       ),
       body: isMobile
           ? Stack(children: [
               mainContent,
-              if (!sidebarOpen)
-                GestureDetector(
-                  onTap: _toggleSidebar,
-                  child: AnimatedBuilder(
-                    animation: _animationController,
-                    builder: (_, __) => Container(
-                      color: Colors.black.withAlpha(
-                          (150 * _animationController.value).toInt()),
-                    ),
-                  ),
-                ),
+              AnimatedBuilder(
+                animation: _animationController,
+                builder: (_, __) => _animationController.value > 0
+                    ? GestureDetector(
+                        onTap: _toggleSidebar,
+                        child: Container(
+                          color: Colors.black.withAlpha(
+                              (150 * _animationController.value).toInt()),
+                        ),
+                      )
+                    : IgnorePointer(),
+              ),
               sidebar,
             ])
           : Row(

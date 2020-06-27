@@ -17,7 +17,7 @@ class Sidebar extends StatefulWidget {
     Key key,
     this.activeTabIndices,
     this.setTab,
-    this.isOpen,
+    this.isOpen = true,
   }) : super(key: key);
 
   @override
@@ -42,11 +42,11 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 300),
-      value: widget.isOpen ? 1 : 0,
+      value: widget.isOpen ? 0 : 1,
     );
     _animation = CurvedAnimation(
         parent: _animationController, curve: Curves.easeInOutQuad);
-    if (!widget.isOpen)
+    if (widget.isOpen)
       _animationController.forward();
     else
       _animationController.reverse();
@@ -163,7 +163,10 @@ class SidebarItem extends StatelessWidget {
     }
 
     return CustomExpansionTile(
-      tilePadding: EdgeInsets.only(left: 16.0 + 20.0 * (_indices.length - 1)),
+      tilePadding: EdgeInsets.only(
+        left: 16.0 + 20.0 * (_indices.length - 1),
+        right: 12.0,
+      ),
       selected:
           activeTabIndices != null && _indicesMatch(_indices, activeTabIndices),
       title: Text(root['title']),
