@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: title,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.orange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: title),
@@ -31,10 +31,13 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   static const _mobileThreshold = 700.0;
   bool isMobile = false;
   bool sidebarOpen = false;
+
+  AnimationController _animationController;
 
   final List<Map<String, dynamic>> tabData = [
     {
@@ -69,6 +72,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+
     Future.delayed(Duration.zero, () {
       final mediaQuery = MediaQuery.of(context);
       setState(() {
@@ -78,9 +84,19 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   void _toggleSidebar() {
     setState(() {
       sidebarOpen = !sidebarOpen;
+      if (sidebarOpen)
+        _animationController.reverse();
+      else
+        _animationController.forward();
     });
   }
 
@@ -95,9 +111,19 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     final mainContent = Center(
       child: tab != null
-          ? Text(
-              'Selected tab: $tab',
-              style: _textStyle,
+          ? Text.rich(
+              TextSpan(
+                text: 'Selected tab: ',
+                style: _textStyle,
+                children: [
+                  TextSpan(
+                    text: '$tab',
+                    style: _textStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             )
           : Text(
               'No tab selected',
@@ -111,7 +137,21 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: isMobile
-          ? Stack(children: [mainContent, sidebar])
+          ? Stack(children: [
+              mainContent,
+              if (!sidebarOpen)
+                GestureDetector(
+                  onTap: _toggleSidebar,
+                  child: AnimatedBuilder(
+                    animation: _animationController,
+                    builder: (_, __) => Container(
+                      color: Colors.black.withAlpha(
+                          (150 * _animationController.value).toInt()),
+                    ),
+                  ),
+                ),
+              sidebar,
+            ])
           : Row(
               children: [
                 sidebar,
