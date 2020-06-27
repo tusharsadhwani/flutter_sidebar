@@ -147,9 +147,15 @@ class SidebarItem extends StatelessWidget {
     for (int i = 0; i < root['children'].length; i++) {
       Map<String, dynamic> item = root['children'][i];
       final itemIndices = [..._indices, i];
-      children.add(SidebarItem(
-          item, setTab, activeTabIndices, setActiveTabIndices,
-          indices: itemIndices));
+      children.add(
+        SidebarItem(
+          item,
+          setTab,
+          activeTabIndices,
+          setActiveTabIndices,
+          indices: itemIndices,
+        ),
+      );
     }
 
     return CustomExpansionTile(
