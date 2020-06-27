@@ -1,14 +1,47 @@
 # flutter_sidebar
 
-A new Flutter package project.
+An easy to configure sidebar widget for your flutter mobile/web apps
 
-## Getting Started
+## Usage
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+```dart
+import 'package:flutter_sidebar/flutter_sidebar.dart';
+```
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+Simple Sidebar with few sidebar items:
+
+```dart
+class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Flutter Sidebar')),
+      drawer: Sidebar(
+        [
+          {
+            'title': 'Chapter A',
+            'children': [
+              {'title': 'Chapter A1'},
+              {'title': 'Chapter A2'},
+            ],
+          },
+          {
+            'title': 'Chapter B',
+            'children': [
+              {'title': 'Chapter B1'},
+              {
+                'title': 'Chapter B2',
+                'children': [
+                  {'title': 'Chapter B2a'},
+                  {'title': 'Chapter B2b'},
+                ],
+              },
+            ],
+          },
+          {'title': 'Chapter C'},
+        ],
+      ),
+    );
+  }
+}
+```
