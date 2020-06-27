@@ -138,6 +138,8 @@ class SidebarItem extends StatelessWidget {
       return ListTile(
         selected: activeTabIndices != null &&
             _indicesMatch(_indices, activeTabIndices),
+        contentPadding:
+            EdgeInsets.only(left: 16.0 + 20.0 * (_indices.length - 1)),
         title: Text(root['title']),
         onTap: () {
           setActiveTabIndices(_indices);
@@ -161,6 +163,7 @@ class SidebarItem extends StatelessWidget {
     }
 
     return CustomExpansionTile(
+      tilePadding: EdgeInsets.only(left: 16.0 + 20.0 * (_indices.length - 1)),
       selected:
           activeTabIndices != null && _indicesMatch(_indices, activeTabIndices),
       title: Text(root['title']),
