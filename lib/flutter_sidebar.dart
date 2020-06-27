@@ -72,13 +72,13 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
         child: SizedOverflowBox(
           size: Size(_sidebarWidth * _animation.value, double.infinity),
           child: Container(
-            color: Colors.white,
+            color: Theme.of(context).canvasColor,
             width: _sidebarWidth,
             child: Column(
               children: [
                 SizedBox(
-                  height: 100,
-                  child: Container(color: Colors.blue),
+                  height: 150,
+                  child: Container(color: Theme.of(context).primaryColor),
                 ),
                 Expanded(
                   child: Material(
