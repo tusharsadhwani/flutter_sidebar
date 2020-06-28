@@ -32,8 +32,10 @@ class _MyHomePageState extends State<MyHomePage>
   static const _mobileThreshold = 700.0;
   bool isMobile = false;
   bool sidebarOpen = false;
+  bool canBeDragged = false;
 
   AnimationController _animationController;
+  Animation _animation;
 
   final List<Map<String, dynamic>> tabData = [
     {
@@ -70,7 +72,8 @@ class _MyHomePageState extends State<MyHomePage>
     super.initState();
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-
+    _animation = CurvedAnimation(
+        parent: _animationController, curve: Curves.easeInOutQuad);
     Future.delayed(Duration.zero, () {
       final mediaQuery = MediaQuery.of(context);
       setState(() {
@@ -96,13 +99,44 @@ class _MyHomePageState extends State<MyHomePage>
     });
   }
 
+  void onDragStart(DragStartDetails details) {
+    bool isClosed = _animationController.isDismissed;
+
+    bool isOpen = _animationController.isCompleted;
+
+    canBeDragged = (isClosed && details.globalPosition.dx < 60) || isOpen;
+  }
+
+  void onDragUpdate(DragUpdateDetails details) {
+    if (canBeDragged) {
+      double delta = details.primaryDelta / 300;
+      _animationController.value += delta;
+    }
+  }
+
+  void onDragEnd(DragEndDetails details) {
+    //I have no idea what it means, copied from Drawer
+    double _kMinFlingVelocity = 365.0;
+
+    if (_animationController.isDismissed || _animationController.isCompleted) {
+      return;
+    }
+    if (details.velocity.pixelsPerSecond.dx.abs() >= _kMinFlingVelocity) {
+      double visualVelocity = details.velocity.pixelsPerSecond.dx / 300;
+
+      _animationController.fling(velocity: visualVelocity);
+    } else if (_animationController.value < 0.5) {
+      _animationController.reverse();
+    } else {
+      _animationController.forward();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     const _textStyle = TextStyle(fontSize: 26);
     final sidebar = Sidebar(
       tabData,
-      key: ValueKey(sidebarOpen), //TODO: prevent rebuilds on sidebarOpen change
-      isOpen: sidebarOpen,
       setTab: setTab,
     );
     final mainContent = Center(
@@ -132,29 +166,53 @@ class _MyHomePageState extends State<MyHomePage>
         leading: IconButton(icon: Icon(Icons.menu), onPressed: _toggleSidebar),
         title: Text('Flutter Sidebar'),
       ),
-      body: isMobile
-          ? Stack(children: [
-              mainContent,
-              AnimatedBuilder(
-                animation: _animationController,
-                builder: (_, __) => _animationController.value > 0
-                    ? GestureDetector(
-                        onTap: _toggleSidebar,
-                        child: Container(
-                          color: Colors.black.withAlpha(
-                              (150 * _animationController.value).toInt()),
-                        ),
-                      )
-                    : IgnorePointer(),
+      body: AnimatedBuilder(
+        animation: _animation,
+        builder: (_, __) => isMobile
+            ? Stack(
+                children: [
+                  GestureDetector(
+                    onHorizontalDragStart: onDragStart,
+                    onHorizontalDragUpdate: onDragUpdate,
+                    onHorizontalDragEnd: onDragEnd,
+                    child: Container(
+                      color: Colors.transparent,
+                    ),
+                  ),
+                  mainContent,
+                  if (_animation.value > 0)
+                    Container(
+                      color: Colors.black
+                          .withAlpha((150 * _animation.value).toInt()),
+                    ),
+                  if (_animation.value == 1)
+                    GestureDetector(
+                      onTap: _toggleSidebar,
+                      child: Container(
+                        color: Colors.transparent,
+                      ),
+                    ),
+                  ClipRect(
+                    child: SizedOverflowBox(
+                      size: Size(300 * _animation.value, double.infinity),
+                      child: sidebar,
+                    ),
+                  ),
+                ],
+              )
+            : Row(
+                children: [
+                  ClipRect(
+                    child: SizedOverflowBox(
+                      size: Size(
+                          300 * _animationController.value, double.infinity),
+                      child: sidebar,
+                    ),
+                  ),
+                  Expanded(child: mainContent),
+                ],
               ),
-              sidebar,
-            ])
-          : Row(
-              children: [
-                sidebar,
-                Expanded(child: mainContent),
-              ],
-            ),
+      ),
     );
   }
 }
