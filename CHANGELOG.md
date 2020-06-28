@@ -25,3 +25,7 @@
 ## [0.2.2] - June 27, 2020
 
 - Bugfixes
+
+## [0.2.3] - June 28, 2020
+
+- Fix drawer state persistence
