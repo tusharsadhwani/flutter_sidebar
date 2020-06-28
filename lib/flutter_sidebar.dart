@@ -34,12 +34,10 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
   }
 
   @override
-  void initState() {
-    Future.delayed(Duration.zero, () {
-      final mediaQuery = MediaQuery.of(context);
-      _sidebarWidth = min(mediaQuery.size.width * 0.7, _maxSidebarWidth);
-    });
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final mediaQuery = MediaQuery.of(context);
+    _sidebarWidth = min(mediaQuery.size.width * 0.7, _maxSidebarWidth);
   }
 
   @override
@@ -112,7 +110,7 @@ class SidebarItem extends StatelessWidget {
         title: Text(root['title']),
         onTap: () {
           setActiveTabIndices(_indices);
-          setTab(root['title']);
+          if (setTab != null) setTab(root['title']);
         },
       );
 

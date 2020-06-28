@@ -74,12 +74,16 @@ class _MyHomePageState extends State<MyHomePage>
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _animation = CurvedAnimation(
         parent: _animationController, curve: Curves.easeInOutQuad);
-    Future.delayed(Duration.zero, () {
-      final mediaQuery = MediaQuery.of(context);
-      setState(() {
-        isMobile = mediaQuery.size.width < _mobileThreshold;
-        sidebarOpen = !isMobile;
-      });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final mediaQuery = MediaQuery.of(context);
+    setState(() {
+      isMobile = mediaQuery.size.width < _mobileThreshold;
+      sidebarOpen = !isMobile;
+      _animationController.value = 1;
     });
   }
 
@@ -115,7 +119,6 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   void onDragEnd(DragEndDetails details) {
-    //I have no idea what it means, copied from Drawer
     double _kMinFlingVelocity = 365.0;
 
     if (_animationController.isDismissed || _animationController.isCompleted) {
