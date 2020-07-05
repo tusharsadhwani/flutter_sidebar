@@ -33,3 +33,8 @@
 ## [0.2.4] - June 28, 2020
 
 - Small bugfixes and optimizations
+
+## [0.3.0] - July 5, 2020
+
+- Improved the constructor API
+- Several bugfixes, optimizations and code cleanup
