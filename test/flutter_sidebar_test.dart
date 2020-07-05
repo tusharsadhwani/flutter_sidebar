@@ -4,8 +4,8 @@ import 'package:flutter_sidebar/flutter_sidebar.dart';
 
 void main() {
   test('adds one to input values', () {
-    final sidebar = Sidebar(
-      [],
+    final sidebar = Sidebar.fromJson(
+      tabs: [],
     );
     expect(sidebar.runtimeType, Sidebar);
   });

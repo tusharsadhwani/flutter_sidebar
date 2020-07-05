@@ -60,7 +60,9 @@ class _MyHomePageState extends State<MyHomePage>
         },
       ],
     },
-    {'title': 'Chapter C'},
+    {
+      'title': 'Chapter C',
+    },
   ];
   String tab;
   void setTab(String newTab) {
@@ -162,10 +164,10 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   Widget build(BuildContext context) {
     const _textStyle = TextStyle(fontSize: 26);
-    final sidebar = Sidebar(
-      tabData,
+    final sidebar = Sidebar.fromJson(
       key: _sidebarKey,
-      setTab: setTab,
+      tabs: tabData,
+      onTabChanged: setTab,
     );
     final mainContent = Center(
       child: tab != null

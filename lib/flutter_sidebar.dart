@@ -8,14 +8,21 @@ import 'custom_expansion_tile.dart';
 
 class Sidebar extends StatefulWidget {
   final List<Map<String, dynamic>> tabs;
-  final void Function(String) setTab;
+  final void Function(String) onTabChanged;
   final List<int> activeTabIndices;
 
-  const Sidebar(
-    this.tabs, {
+  // const Sidebar({
+  //   Key key,
+  //   @required this.tabs,
+  //   this.onTabChanged,
+  //   this.activeTabIndices,
+  // }) : super(key: key);
+
+  const Sidebar.fromJson({
     Key key,
+    @required this.tabs,
+    this.onTabChanged,
     this.activeTabIndices,
-    this.setTab,
   }) : super(key: key);
 
   @override
@@ -56,7 +63,7 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
               child: ListView.builder(
                 itemBuilder: (BuildContext context, int index) => SidebarItem(
                   widget.tabs[index],
-                  widget.setTab,
+                  widget.onTabChanged,
                   activeTabIndices,
                   setActiveTabIndices,
                   index: index,
@@ -73,7 +80,7 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
 
 class SidebarItem extends StatelessWidget {
   final Map<String, dynamic> data;
-  final void Function(String) setTab;
+  final void Function(String) onTabChanged;
   final List<int> activeTabIndices;
   final void Function(List<int> newIndices) setActiveTabIndices;
   final int index;
@@ -81,7 +88,7 @@ class SidebarItem extends StatelessWidget {
 
   const SidebarItem(
     this.data,
-    this.setTab,
+    this.onTabChanged,
     this.activeTabIndices,
     this.setActiveTabIndices, {
     this.index,
@@ -110,7 +117,7 @@ class SidebarItem extends StatelessWidget {
         title: Text(root['title']),
         onTap: () {
           setActiveTabIndices(_indices);
-          if (setTab != null) setTab(root['title']);
+          if (onTabChanged != null) onTabChanged(root['id'] ?? root['title']);
         },
       );
 
@@ -121,7 +128,7 @@ class SidebarItem extends StatelessWidget {
       children.add(
         SidebarItem(
           item,
-          setTab,
+          onTabChanged,
           activeTabIndices,
           setActiveTabIndices,
           indices: itemIndices,
