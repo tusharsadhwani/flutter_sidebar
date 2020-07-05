@@ -125,9 +125,6 @@ class _MyHomePageState extends State<MyHomePage>
   void onDragEnd(DragEndDetails details) async {
     double _kMinFlingVelocity = 365.0;
 
-    if (_animationController.isDismissed || _animationController.isCompleted) {
-      return;
-    }
     if (details.velocity.pixelsPerSecond.dx.abs() >= _kMinFlingVelocity) {
       double visualVelocity = details.velocity.pixelsPerSecond.dx / 300;
 
@@ -141,16 +138,18 @@ class _MyHomePageState extends State<MyHomePage>
           sidebarOpen = false;
         });
       }
-    } else if (_animationController.value < 0.5) {
-      _animationController.reverse();
-      setState(() {
-        sidebarOpen = false;
-      });
     } else {
-      _animationController.forward();
-      setState(() {
-        sidebarOpen = true;
-      });
+      if (_animationController.value < 0.5) {
+        _animationController.reverse();
+        setState(() {
+          sidebarOpen = false;
+        });
+      } else {
+        _animationController.forward();
+        setState(() {
+          sidebarOpen = true;
+        });
+      }
     }
   }
 
@@ -217,7 +216,8 @@ class _MyHomePageState extends State<MyHomePage>
                     ),
                   ClipRect(
                     child: SizedOverflowBox(
-                      size: Size(300 * _animation.value, double.infinity),
+                      size: Size(
+                          300 * _animationController.value, double.infinity),
                       child: sidebar,
                     ),
                   ),
