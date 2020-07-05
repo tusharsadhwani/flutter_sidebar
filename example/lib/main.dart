@@ -203,9 +203,6 @@ class _MyHomePageState extends State<MyHomePage>
                     onHorizontalDragStart: onDragStart,
                     onHorizontalDragUpdate: onDragUpdate,
                     onHorizontalDragEnd: onDragEnd,
-                    child: Container(
-                      color: Colors.transparent,
-                    ),
                   ),
                   mainContent,
                   if (_animation.value > 0)
@@ -217,9 +214,6 @@ class _MyHomePageState extends State<MyHomePage>
                     GestureDetector(
                       onTap: _toggleSidebar,
                       onHorizontalDragUpdate: dragCloseDrawer,
-                      child: Container(
-                        color: Colors.transparent,
-                      ),
                     ),
                   ClipRect(
                     child: SizedOverflowBox(
