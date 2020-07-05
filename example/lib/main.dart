@@ -109,9 +109,7 @@ class _MyHomePageState extends State<MyHomePage>
 
   void onDragStart(DragStartDetails details) {
     bool isClosed = _animationController.isDismissed;
-
     bool isOpen = _animationController.isCompleted;
-
     canBeDragged = (isClosed && details.globalPosition.dx < 60) || isOpen;
   }
 
@@ -119,6 +117,14 @@ class _MyHomePageState extends State<MyHomePage>
     if (canBeDragged) {
       double delta = details.primaryDelta / 300;
       _animationController.value += delta;
+    }
+  }
+
+  void dragCloseDrawer(DragUpdateDetails details) {
+    double delta = details.primaryDelta;
+    if (delta < 0) {
+      sidebarOpen = false;
+      _animationController.reverse();
     }
   }
 
@@ -210,14 +216,14 @@ class _MyHomePageState extends State<MyHomePage>
                   if (_animation.value == 1)
                     GestureDetector(
                       onTap: _toggleSidebar,
+                      onHorizontalDragUpdate: dragCloseDrawer,
                       child: Container(
                         color: Colors.transparent,
                       ),
                     ),
                   ClipRect(
                     child: SizedOverflowBox(
-                      size: Size(
-                          300 * _animationController.value, double.infinity),
+                      size: Size(300 * _animation.value, double.infinity),
                       child: sidebar,
                     ),
                   ),
@@ -227,8 +233,7 @@ class _MyHomePageState extends State<MyHomePage>
                 children: [
                   ClipRect(
                     child: SizedOverflowBox(
-                      size: Size(
-                          300 * _animationController.value, double.infinity),
+                      size: Size(300 * _animation.value, double.infinity),
                       child: sidebar,
                     ),
                   ),
