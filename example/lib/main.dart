@@ -122,12 +122,26 @@ class _MyHomePageState extends State<MyHomePage>
     }
   }
 
-  void onDragEnd(DragEndDetails details) {
+  void onDragEnd(DragEndDetails details) async {
+    double _kMinFlingVelocity = 365.0;
+
     if (_animationController.isDismissed || _animationController.isCompleted) {
       return;
     }
+    if (details.velocity.pixelsPerSecond.dx.abs() >= _kMinFlingVelocity) {
+      double visualVelocity = details.velocity.pixelsPerSecond.dx / 300;
 
-    if (_animationController.value < 0.5) {
+      await _animationController.fling(velocity: visualVelocity);
+      if (_animationController.isCompleted) {
+        setState(() {
+          sidebarOpen = true;
+        });
+      } else {
+        setState(() {
+          sidebarOpen = false;
+        });
+      }
+    } else if (_animationController.value < 0.5) {
       _animationController.reverse();
       setState(() {
         sidebarOpen = false;
