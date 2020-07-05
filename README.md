@@ -18,8 +18,8 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Flutter Sidebar')),
-      drawer: Sidebar(
-        [
+      drawer: Sidebar.fromJson(
+        tabs: [
           {
             'title': 'Chapter A',
             'children': [
