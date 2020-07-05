@@ -2,6 +2,8 @@
 
 An easy to configure sidebar widget for your flutter mobile/web apps
 
+![2020-06-29-225932_1124x667_scrot](https://user-images.githubusercontent.com/43412083/86037559-285b0500-ba5d-11ea-9b1d-0d690b7b3aae.png)
+
 ## Usage
 
 ```dart
