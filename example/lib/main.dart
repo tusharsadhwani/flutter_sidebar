@@ -34,6 +34,8 @@ class _MyHomePageState extends State<MyHomePage>
   bool sidebarOpen = false;
   bool canBeDragged = false;
 
+  GlobalKey _sidebarKey;
+
   AnimationController _animationController;
   Animation _animation;
 
@@ -70,6 +72,8 @@ class _MyHomePageState extends State<MyHomePage>
   @override
   void initState() {
     super.initState();
+    _sidebarKey = GlobalKey();
+
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _animation = CurvedAnimation(
@@ -83,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage>
     setState(() {
       isMobile = mediaQuery.size.width < _mobileThreshold;
       sidebarOpen = !isMobile;
-      _animationController.value = 1;
+      _animationController.value = isMobile ? 0 : 1;
     });
   }
 
@@ -119,19 +123,20 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   void onDragEnd(DragEndDetails details) {
-    double _kMinFlingVelocity = 365.0;
-
     if (_animationController.isDismissed || _animationController.isCompleted) {
       return;
     }
-    if (details.velocity.pixelsPerSecond.dx.abs() >= _kMinFlingVelocity) {
-      double visualVelocity = details.velocity.pixelsPerSecond.dx / 300;
 
-      _animationController.fling(velocity: visualVelocity);
-    } else if (_animationController.value < 0.5) {
+    if (_animationController.value < 0.5) {
       _animationController.reverse();
+      setState(() {
+        sidebarOpen = false;
+      });
     } else {
       _animationController.forward();
+      setState(() {
+        sidebarOpen = true;
+      });
     }
   }
 
@@ -140,6 +145,7 @@ class _MyHomePageState extends State<MyHomePage>
     const _textStyle = TextStyle(fontSize: 26);
     final sidebar = Sidebar(
       tabData,
+      key: _sidebarKey,
       setTab: setTab,
     );
     final mainContent = Center(
