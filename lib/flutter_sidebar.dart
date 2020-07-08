@@ -1,6 +1,6 @@
 library flutter_sidebar;
 
-import 'dart:math';
+import 'dart:math' show min;
 
 import 'package:flutter/material.dart';
 
@@ -33,6 +33,39 @@ class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
   static const double _maxSidebarWidth = 300;
   double _sidebarWidth = _maxSidebarWidth;
   List<int> activeTabIndices;
+
+  void initState() {
+    super.initState();
+
+    Future.delayed(Duration.zero, () {
+      if (activeTabIndices == null) {
+        final newActiveTabData = _getFirstTabIndex(widget.tabs, []);
+        List<int> newActiveTabIndices = newActiveTabData[0];
+        String tabId = newActiveTabData[1];
+        if (newActiveTabIndices.length > 0) {
+          setActiveTabIndices(newActiveTabIndices);
+          if (widget.onTabChanged != null) widget.onTabChanged(tabId);
+        }
+      }
+    });
+  }
+
+  List<Object> _getFirstTabIndex(
+      List<Map<String, dynamic>> tabs, List<int> indices) {
+    String tabId;
+    if (tabs.length > 0) {
+      Map<String, dynamic> firstTab = tabs[0];
+      tabId = firstTab['id'] ?? firstTab['title'];
+      indices.add(0);
+
+      if (firstTab['children'] != null) {
+        final tabData = _getFirstTabIndex(firstTab['children'], indices);
+        indices = tabData[0];
+        tabId = tabData[1];
+      }
+    }
+    return [indices, tabId];
+  }
 
   void setActiveTabIndices(List<int> newIndices) {
     setState(() {
