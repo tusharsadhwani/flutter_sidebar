@@ -38,3 +38,7 @@
 
 - Improved the constructor API
 - Several bugfixes, optimizations and code cleanup
+
+## [0.3.1] - July 8, 2020
+
+- Add auto open first tab from tabs
