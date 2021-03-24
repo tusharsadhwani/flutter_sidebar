@@ -26,10 +26,11 @@ class Sidebar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SidebarState createState() => _SidebarState();
+  _SidebarState createState() => _SidebarState(activeTabIndices);
 }
 
 class _SidebarState extends State<Sidebar> with SingleTickerProviderStateMixin {
+  _SidebarState(this.activeTabIndices);
   static const double _maxSidebarWidth = 300;
   double _sidebarWidth = _maxSidebarWidth;
   List<int> activeTabIndices;
